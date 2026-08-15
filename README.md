@@ -99,7 +99,7 @@ The event relay script sends this message format to the platform. You don't need
 ```javascript
 {
   source: "partnername-browser-event-relay",
-  type: "IFRAME_CLICK_MESSAGE",     // or other event types
+  type: "PARTNER_PARTNER_IFRAME_CLICK_MESSAGE",     // or other event types
   timestamp: 1691743200000
 }
 ```
