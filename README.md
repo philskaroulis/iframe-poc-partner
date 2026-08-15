@@ -58,7 +58,7 @@ the platform's required tracking script. In production:
 
 The platform's `browser-event-relay.js` (loaded cross-origin via `<script src>`):
 
-1. Detects user activity inside the partner iframe (click, keypress, scroll, mousemove, visibility change)
+1. Detects user activity inside the partner iframe (click, keypress, scroll, mousemove)
 2. Derives the platform's origin from `document.referrer` (automatically available cross-origin)
 3. Sends minimal messages via `window.parent.postMessage()` to the platform
 4. Supports lifecycle management (`init()`, `cleanup()`) if your partner content is a single-page app
