@@ -9,19 +9,19 @@
 │    PLATFORM PAGE (Vercel)           │
 │    (iframe-poc-platform)            │
 │                                     │
-│  ┌──────────────────────────────┐  │
-│  │  This Partner Iframe Content │  │
-│  │  (cross-origin, GitHub Pages)│  │
-│  │                              │  │
-│  │  Loads browser-event-relay  │  │
-│  │  .js from platform by URL    │  │
-│  └──────────────────────────────┘  │
+│  ┌──────────────────────────────┐   │
+│  │  This Partner Iframe Content │   │
+│  │  (cross-origin, GitHub Pages)│   │
+│  │                              │   │
+│  │  Loads browser-event-relay   │   │
+│  │  .js from platform by URL    │   │
+│  └──────────────────────────────┘   │
 └─────────────────────────────────────┘
          ▲
          │ postMessage() to platform
          │
   ┌──────┴─────────────┐
-  │ YOUR CODE HERE      │
+  │ YOUR CODE HERE     │
   │                    │
   │ index.html or      │
   │ index-dev.html     │
