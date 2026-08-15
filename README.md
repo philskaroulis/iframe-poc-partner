@@ -1,6 +1,6 @@
 # iframe-poc-partner
 
-**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `partnername-browser-event-relay.js` tracking script from the platform repo by reference.
+**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `partnername-browser-event-relay.js` event relay script from the platform repo by reference.
 
 ## Architecture
 
@@ -29,7 +29,7 @@
   │ (your content)     │
   │                    │
   │ The platform's     │
-  │ tracking script    │
+  │ event relay script    │
   │ auto-initializes   │
   │ and monitors       │
   │ user activity      │
@@ -39,7 +39,7 @@
 ## What This Repo Is
 
 This repo is **example third-party content** that demonstrates how a partner would embed
-the platform's required tracking script. In production:
+the platform's required event relay script. In production:
 
 - **This repo plays the "partner"** — arbitrary third-party content (e.g., a widget, sidebar, embedded app)
 - **You modify `index.html` and `index-dev.html`** to add your own content
@@ -51,10 +51,10 @@ the platform's required tracking script. In production:
 
 | File | Purpose |
 |---|---|
-| `index.html` | Example partner content (production) — loads platform's tracking script |
-| `index-dev.html` | Example partner content (dev/preview) — loads platform's dev tracking script + dev banner |
+| `index.html` | Example partner content (production) — loads platform's event relay script |
+| `index-dev.html` | Example partner content (dev/preview) — loads platform's dev event relay script + dev banner |
 
-## How the Tracking Script Works (Read-Only for Partner)
+## How the Event Relay Script Works (Read-Only for Partner)
 
 The platform's `partnername-browser-event-relay.js` (loaded cross-origin via `<script src>`):
 
@@ -94,7 +94,7 @@ To integrate as a real platform partner:
 
 ## Message Format (Information Only)
 
-The tracking script sends this message format to the platform. You don't need to send messages yourself — the script handles it:
+The event relay script sends this message format to the platform. You don't need to send messages yourself — the script handles it:
 
 ```javascript
 {
@@ -146,7 +146,7 @@ dev: {
 
 Open browser console and:
 
-1. Check that the tracking script loaded:
+1. Check that the event relay script loaded:
    ```javascript
    window.BrowserEventRelay  // Should be defined
    window.BrowserEventRelay.getVersion()  // Should return version
@@ -157,7 +157,7 @@ Open browser console and:
    console.log(document.referrer)  // Should show platform's origin
    ```
 
-3. Enable tracking script debug output:
+3. Enable event relay script debug output:
    ```javascript
    // The script logs to console during init, look for "[partnername-browser-event-relay]" messages
    ```
@@ -171,7 +171,7 @@ Open browser console and:
 
 This partner content is deployed separately from the platform. When deploying:
 
-1. **Update tracking script URL** if the platform deployment domain changes
+1. **Update event relay script URL** if the platform deployment domain changes
 2. **Update CSP header** to allow scripts from the platform's new domain
 3. **Notify the platform** of your new deployed URL so they can update their `env-config.js`
 
@@ -181,8 +181,8 @@ See the platform's [README.md](../iframe-poc-platform/README.md) for how the pla
 
 ### index.html vs. index-dev.html
 
-- **`index.html`**: Production partner content, loads platform's production tracking script
-- **`index-dev.html`**: Development partner content (includes blue dev banner), loads platform's dev/preview tracking script
+- **`index.html`**: Production partner content, loads platform's production event relay script
+- **`index-dev.html`**: Development partner content (includes blue dev banner), loads platform's dev/preview event relay script
 
 The platform's `env-config.js` decides which one to load based on environment.
 
@@ -200,7 +200,7 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ## Troubleshooting
 
-### Tracking script not loading
+### Event relay script not loading
 
 **Check CSP header:**
 ```html
@@ -214,13 +214,13 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ### `window.BrowserEventRelay` is undefined
 
-- Verify the tracking script URL is correct and accessible
+- Verify the event relay script URL is correct and accessible
 - Verify CSP allows the script load
 - Check browser console for errors during script load
 
 ### Messages not being sent to platform
 
-1. Verify the tracking script loaded: `window.BrowserEventRelay` should exist
+1. Verify the event relay script loaded: `window.BrowserEventRelay` should exist
 2. Verify parent origin was detected: `console.log(document.referrer)` in partner console
 3. If referrer is empty:
    - Platform must set `referrerpolicy="strict-origin"` on the iframe (default is `no-referrer`)
@@ -239,7 +239,7 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ## Technical Notes
 
-- The tracking script is pure JavaScript (no dependencies)
+- The event relay script is pure JavaScript (no dependencies)
 - It's minified (~1KB) for fast loading
 - Uses passive event listeners for performance
 - Automatically derives trust from `document.referrer` (no configuration needed)
