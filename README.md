@@ -1,6 +1,6 @@
 # iframe-poc-partner
 
-**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `messages-from-iframe.js` tracking script from the platform repo by reference.
+**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `browser-event-relay.js` tracking script from the platform repo by reference.
 
 ## Architecture
 
@@ -13,7 +13,7 @@
 │  │  This Partner Iframe Content │  │
 │  │  (cross-origin, GitHub Pages)│  │
 │  │                              │  │
-│  │  Loads messages-from-iframe  │  │
+│  │  Loads browser-event-relay  │  │
 │  │  .js from platform by URL    │  │
 │  └──────────────────────────────┘  │
 └─────────────────────────────────────┘
@@ -43,7 +43,7 @@ the platform's required tracking script. In production:
 
 - **This repo plays the "partner"** — arbitrary third-party content (e.g., a widget, sidebar, embedded app)
 - **You modify `index.html` and `index-dev.html`** to add your own content
-- **You must load the platform's `messages-from-iframe.js` script** — this is the platform's requirement for embedding your content in their iframe
+- **You must load the platform's `browser-event-relay.js` script** — this is the platform's requirement for embedding your content in their iframe
 - The script auto-initializes and detects user activity (clicks, typing, scrolling, etc.)
 - It sends messages back to the platform page via `postMessage()`
 
@@ -56,7 +56,7 @@ the platform's required tracking script. In production:
 
 ## How the Tracking Script Works (Read-Only for Partner)
 
-The platform's `messages-from-iframe.js` (loaded cross-origin via `<script src>`):
+The platform's `browser-event-relay.js` (loaded cross-origin via `<script src>`):
 
 1. Detects user activity inside the partner iframe (click, keypress, scroll, mousemove, visibility change)
 2. Derives the platform's origin from `document.referrer` (automatically available cross-origin)
@@ -71,10 +71,10 @@ To integrate as a real platform partner:
 
 1. **Copy `index.html` from this repo** as a template
 2. **Replace the placeholder content** with your actual app/widget/content
-3. **Keep the `<script src>` tag** pointing to the platform's `messages-from-iframe.js`:
+3. **Keep the `<script src>` tag** pointing to the platform's `browser-event-relay.js`:
    ```html
    <!-- Production (communicates with platform at https://iframe-poc-platform.vercel.app) -->
-   <script src="https://iframe-poc-platform.vercel.app/messages-from-iframe.min.js"></script>
+   <script src="https://iframe-poc-platform.vercel.app/browser-event-relay.min.js"></script>
    ```
 4. **Update CSP** to allow scripts from the platform's domain:
    ```html
@@ -84,12 +84,12 @@ To integrate as a real platform partner:
 6. **For SPAs**: manage lifecycle on component mount/unmount:
    ```javascript
    // On mount
-   if (!window.IframeMessenger.isInitialized()) {
-     window.IframeMessenger.init();
+   if (!window.BrowserEventRelay.isInitialized()) {
+     window.BrowserEventRelay.init();
    }
    
    // On unmount
-   window.IframeMessenger.cleanup();
+   window.BrowserEventRelay.cleanup();
    ```
 
 ## Message Format (Information Only)
@@ -98,7 +98,7 @@ The tracking script sends this message format to the platform. You don't need to
 
 ```javascript
 {
-  source: "iframe-messages",
+  source: "browser-event-relay",
   type: "IFRAME_CLICK_MESSAGE",     // or other event types
   timestamp: 1691743200000
 }
@@ -148,8 +148,8 @@ Open browser console and:
 
 1. Check that the tracking script loaded:
    ```javascript
-   window.IframeMessenger  // Should be defined
-   window.IframeMessenger.getVersion()  // Should return version
+   window.BrowserEventRelay  // Should be defined
+   window.BrowserEventRelay.getVersion()  // Should return version
    ```
 
 2. Check that parent origin was detected:
@@ -159,7 +159,7 @@ Open browser console and:
 
 3. Enable tracking script debug output:
    ```javascript
-   // The script logs to console during init, look for "[iframe-messages]" messages
+   // The script logs to console during init, look for "[browser-event-relay]" messages
    ```
 
 4. Interact with the partner content (click, type, scroll) and check:
@@ -192,10 +192,10 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ```html
 <!-- Current -->
-<script src="https://iframe-poc-platform-git-develop-phil-skaroulis-projects.vercel.app/messages-from-iframe.min.js"></script>
+<script src="https://iframe-poc-platform-git-develop-phil-skaroulis-projects.vercel.app/browser-event-relay.min.js"></script>
 
 <!-- To test local platform on port 8001 -->
-<script src="http://localhost:8001/messages-from-iframe.min.js"></script>
+<script src="http://localhost:8001/browser-event-relay.min.js"></script>
 ```
 
 ## Troubleshooting
@@ -212,7 +212,7 @@ If you're testing with a local platform deployment or a different Vercel preview
 - Is the script URL accessible? Try visiting it directly in a new tab.
 - Is CSP blocking it? Look for CSP violation messages in console.
 
-### `window.IframeMessenger` is undefined
+### `window.BrowserEventRelay` is undefined
 
 - Verify the tracking script URL is correct and accessible
 - Verify CSP allows the script load
@@ -220,7 +220,7 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ### Messages not being sent to platform
 
-1. Verify the tracking script loaded: `window.IframeMessenger` should exist
+1. Verify the tracking script loaded: `window.BrowserEventRelay` should exist
 2. Verify parent origin was detected: `console.log(document.referrer)` in partner console
 3. If referrer is empty:
    - Platform must set `referrerpolicy="strict-origin"` on the iframe (default is `no-referrer`)
