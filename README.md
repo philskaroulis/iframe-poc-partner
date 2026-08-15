@@ -63,7 +63,7 @@ The platform's `messages-from-iframe.js` (loaded cross-origin via `<script src>`
 3. Sends minimal messages via `window.parent.postMessage()` to the platform
 4. Supports lifecycle management (`init()`, `cleanup()`) if your partner content is a single-page app
 
-**You don't need to do anything** — the script auto-initializes on load. If your content is an SPA that unmounts/remounts, see **[VENDOR_INTEGRATION.md](../iframe-poc-platform/VENDOR_INTEGRATION.md)** in the platform repo for lifecycle management.
+**You don't need to do anything** — the script auto-initializes on load. If your content is an SPA that unmounts/remounts, see **[PARTNER_INTEGRATION.md](../iframe-poc-platform/PARTNER_INTEGRATION.md)** in the platform repo for lifecycle management.
 
 ## Integration Checklist
 
@@ -128,8 +128,8 @@ The platform's dev `env-config.js` should point to `http://localhost:8000`:
 
 ```javascript
 dev: {
-    VENDOR_URL: 'http://localhost:8000/index.html',
-    VENDOR_ORIGIN: 'http://localhost:8000'
+    PARTNER_URL: 'http://localhost:8000/index.html',
+    PARTNER_ORIGIN: 'http://localhost:8000'
 }
 ```
 
@@ -137,8 +137,8 @@ Or use `index-dev.html`:
 
 ```javascript
 dev: {
-    VENDOR_URL: 'http://localhost:8000/index-dev.html',
-    VENDOR_ORIGIN: 'http://localhost:8000'
+    PARTNER_URL: 'http://localhost:8000/index-dev.html',
+    PARTNER_ORIGIN: 'http://localhost:8000'
 }
 ```
 
@@ -235,7 +235,7 @@ If you're testing with a local platform deployment or a different Vercel preview
 ## For More Details
 
 - **Platform's complete documentation**: [iframe-poc-platform README.md](../iframe-poc-platform/README.md)
-- **Integration guide** (lifecycle management for SPAs): [VENDOR_INTEGRATION.md](../iframe-poc-platform/VENDOR_INTEGRATION.md)
+- **Integration guide** (lifecycle management for SPAs): [PARTNER_INTEGRATION.md](../iframe-poc-platform/PARTNER_INTEGRATION.md)
 
 ## Technical Notes
 
