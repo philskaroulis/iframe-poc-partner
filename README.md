@@ -240,11 +240,12 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ## Technical Notes
 
-- The event relay script is pure JavaScript (no dependencies)
+- The event relay script is pure JavaScript (no dependencies or polyfills)
 - It's minified (~1KB) for fast loading
-- Uses passive event listeners for performance
+- **IE9+ compatible** — uses manual URL/query parsing, no passive event options
 - Automatically derives trust from `document.referrer` (no configuration needed)
 - Handles lifecycle management for single-page apps
+- Supported: IE9+, Chrome 32+, Safari 10+, Firefox 26+
 
 ## License
 
