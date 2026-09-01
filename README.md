@@ -1,6 +1,6 @@
 # iframe-poc-partner
 
-**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `partnername-browser-event-relay.js` event relay script from the platform repo by reference.
+**Part of a two-repo platform/partner `postMessage` POC.** This repo simulates a **partner** (third-party content provider) whose pages are embedded in a cross-origin iframe by the platform. The partner is required to load the platform's `oreilly-browser-event-relay.js` event relay script from the platform repo by reference.
 
 ## Architecture
 
@@ -13,7 +13,7 @@
 │  │  This Partner Iframe Content │   │
 │  │  (cross-origin, GitHub Pages)│   │
 │  │                              │   │
-│  │  Loads partnername-browser-event-relay   │   │
+│  │  Loads oreilly-browser-event-relay   │   │
 │  │  .js from platform by URL    │   │
 │  └──────────────────────────────┘   │
 └─────────────────────────────────────┘
@@ -43,7 +43,7 @@ the platform's required event relay script. In production:
 
 - **This repo plays the "partner"** — arbitrary third-party content (e.g., a widget, sidebar, embedded app)
 - **You modify `index.html` and `index-dev.html`** to add your own content
-- **You must load the platform's `partnername-browser-event-relay.js` script** — this is the platform's requirement for embedding your content in their iframe
+- **You must load the platform's `oreilly-browser-event-relay.js` script** — this is the platform's requirement for embedding your content in their iframe
 - The script auto-initializes and detects user activity (clicks, typing, scrolling, etc.)
 - It sends messages back to the platform page via `postMessage()`
 
@@ -56,14 +56,15 @@ the platform's required event relay script. In production:
 
 ## How the Event Relay Script Works (Read-Only for Partner)
 
-The platform's `partnername-browser-event-relay.js` (loaded cross-origin via `<script src>`):
+The platform's `oreilly-browser-event-relay.js` (loaded cross-origin via `<script src>`):
 
 1. Detects user activity inside the partner iframe (click, keypress, scroll, mousemove)
 2. Derives the platform's origin from `document.referrer` (automatically available cross-origin)
-3. Sends minimal messages via `window.parent.postMessage()` to the platform
-4. Supports lifecycle management (`init()`, `cleanup()`) if your partner content is a single-page app
+3. Extracts the **relay token** (`iframeId`) from the iframe's URL parameters
+4. Sends minimal messages via `window.parent.postMessage()` to the platform (including the relay token)
+5. Supports lifecycle management (`init()`, `cleanup()`) if your partner content is a single-page app
 
-**You don't need to do anything** — the script auto-initializes on load. If your content is an SPA that unmounts/remounts, see **[PARTNER_INTEGRATION.md](../iframe-poc-platform/PARTNER_INTEGRATION.md)** in the platform repo for lifecycle management.
+**You don't need to do anything** — the script auto-initializes on load. The platform automatically appends the relay token as a URL parameter when loading your iframe, so no configuration is needed. If your content is an SPA that unmounts/remounts, see **[PARTNER_INTEGRATION.md](../iframe-poc-platform/PARTNER_INTEGRATION.md)** in the platform repo for lifecycle management.
 
 ## Integration Checklist
 
@@ -71,10 +72,10 @@ To integrate as a real platform partner:
 
 1. **Copy `index.html` from this repo** as a template
 2. **Replace the placeholder content** with your actual app/widget/content
-3. **Keep the `<script src>` tag** pointing to the platform's `partnername-browser-event-relay.js`:
+3. **Keep the `<script src>` tag** pointing to the platform's `oreilly-browser-event-relay.js`:
    ```html
    <!-- Production (communicates with platform at https://iframe-poc-platform.vercel.app) -->
-   <script src="https://iframe-poc-platform.vercel.app/partnername-browser-event-relay.min.js"></script>
+   <script src="https://iframe-poc-platform.vercel.app/oreilly-browser-event-relay.min.js"></script>
    ```
 4. **Update CSP** to allow scripts from the platform's domain:
    ```html
@@ -98,8 +99,8 @@ The event relay script sends this message format to the platform. You don't need
 
 ```javascript
 {
-  source: "partnername-browser-event-relay",
-  type: "PARTNER_PARTNER_IFRAME_CLICK_MESSAGE",     // or other event types
+  source: "oreilly-browser-event-relay",
+  type: "PARTNER_RELAYED_CLICK",     // or other event types
   timestamp: 1691743200000
 }
 ```
@@ -159,7 +160,7 @@ Open browser console and:
 
 3. Enable event relay script debug output:
    ```javascript
-   // The script logs to console during init, look for "[partnername-browser-event-relay]" messages
+   // The script logs to console during init, look for "[oreilly-browser-event-relay]" messages
    ```
 
 4. Interact with the partner content (click, type, scroll) and check:
@@ -192,10 +193,10 @@ If you're testing with a local platform deployment or a different Vercel preview
 
 ```html
 <!-- Current -->
-<script src="https://iframe-poc-platform-git-develop-phil-skaroulis-projects.vercel.app/partnername-browser-event-relay.min.js"></script>
+<script src="https://iframe-poc-platform-git-develop-phil-skaroulis-projects.vercel.app/oreilly-browser-event-relay.min.js"></script>
 
 <!-- To test local platform on port 8001 -->
-<script src="http://localhost:8001/partnername-browser-event-relay.min.js"></script>
+<script src="http://localhost:8001/oreilly-browser-event-relay.min.js"></script>
 ```
 
 ## Troubleshooting
